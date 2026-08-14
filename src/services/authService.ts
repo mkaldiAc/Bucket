@@ -1,0 +1,11 @@
+import { PublicClientApplication } from '@azure/msal-browser';
+import { config } from '../config';
+const enabled=Boolean(config.azure.clientId&&config.azure.tenantId);
+const client=enabled?new PublicClientApplication({auth:{clientId:config.azure.clientId,authority:`https://login.microsoftonline.com/${config.azure.tenantId}`,redirectUri:config.azure.redirectUri},cache:{cacheLocation:'sessionStorage'}}):null;
+/** Centralise le cycle de vie sécurisé MSAL ; le mode mock fonctionne sans Azure AD. */
+export const authService={
+ async initialize(){if(client)await client.initialize()},
+ async signIn(){if(client)await client.loginRedirect({scopes:[config.azure.apiScope].filter(Boolean)})},
+ async signOut(){if(client)await client.logoutRedirect()},
+ async getAccessToken():Promise<string|null>{if(!client||!config.azure.apiScope)return null;const account=client.getActiveAccount()??client.getAllAccounts()[0];if(!account)return null;return (await client.acquireTokenSilent({account,scopes:[config.azure.apiScope]})).accessToken}
+};
