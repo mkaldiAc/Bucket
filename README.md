@@ -29,3 +29,14 @@ docker run --rm -p 8080:8080 bucket
 ```
 
 Le conteneur Nginx écoute sur le port 8080, compatible avec Azure Container Apps.
+Les variables Vite sont intégrées au bundle au moment de la construction. Pour une image connectée à DAB et Azure AD, transmettez-les donc comme arguments de build (et non avec `docker run -e`) :
+
+```bash
+docker build -t bucket \
+  --build-arg VITE_USE_MOCK_DATA=false \
+  --build-arg VITE_API_BASE_URL=https://example.azurestaticapps.net/api \
+  --build-arg VITE_AZURE_CLIENT_ID=<client-id> \
+  --build-arg VITE_AZURE_TENANT_ID=<tenant-id> \
+  --build-arg VITE_AZURE_REDIRECT_URI=https://bucket.example.com \
+  --build-arg VITE_API_SCOPE=api://<client-id>/access_as_user .
+```
