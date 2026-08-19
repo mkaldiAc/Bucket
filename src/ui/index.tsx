@@ -1,5 +1,5 @@
 import type { ButtonHTMLAttributes, HTMLAttributes, ReactNode } from 'react';
-import { Building2, Check, ClipboardCheck, Filter, Home, Map, Menu, Settings, UserRound } from 'lucide-react';
+import { BarChart3, Check, Filter, Home, Map, Menu, Settings, UserRound } from 'lucide-react';
 
 type Children = { children?: ReactNode };
 
@@ -7,10 +7,10 @@ export function AppShell({ children }: Children) {
   return <div className="aiguillon-shell"><Sidebar/><Topbar/><main className="aiguillon-main"><div className="aiguillon-content">{children}</div></main></div>;
 }
 
-const navItems = [[Home, 'Vue d’ensemble'], [ClipboardCheck, 'Vérifications'], [Building2, 'Résidences'], [Map, 'Carte'], [Settings, 'Paramètres']] as const;
+const navItems = [[Home, 'Vue d’ensemble'], [Map, 'Carte'], [BarChart3, 'Métriques'], [Settings, 'Paramètres']] as const;
 
 export function Sidebar() {
-  return <aside className="aiguillon-sidebar" aria-label="Navigation principale"><Brand/><nav className="aiguillon-nav">{navItems.map(([Icon,label], index)=><button key={label} className="aiguillon-nav__item" aria-current={index===1?'page':undefined}><Icon/>{label}</button>)}</nav><div className="aiguillon-user"><span>CM</span><div><b>Camille Martin</b><small>Agent de terrain</small></div></div></aside>;
+  return <aside className="aiguillon-sidebar" aria-label="Navigation principale"><Brand/><nav className="aiguillon-nav">{navItems.map(([Icon,label], index)=><button key={label} className="aiguillon-nav__item" aria-current={index===0?'page':undefined}><Icon/>{label}</button>)}</nav><div className="aiguillon-user"><span>CM</span><div><b>Camille Martin</b><small>Agent de terrain</small></div></div></aside>;
 }
 
 export function Topbar() {
