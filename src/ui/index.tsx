@@ -1,16 +1,16 @@
 import type { ButtonHTMLAttributes, HTMLAttributes, ReactNode } from 'react';
-import { BarChart3, Check, Filter, Home, Map, Menu, Settings, UserRound } from 'lucide-react';
+import { BarChart3, Check, Filter, Home, Menu, Settings, UserRound } from 'lucide-react';
 
 type Children = { children?: ReactNode };
 
-export function AppShell({ children }: Children) {
-  return <div className="aiguillon-shell"><Sidebar/><Topbar/><main className="aiguillon-main"><div className="aiguillon-content">{children}</div></main></div>;
+export function AppShell({ children, activeView='overview', onNavigate }: Children & {activeView?:'overview'|'metrics';onNavigate?:(view:'overview'|'metrics')=>void}) {
+  return <div className="aiguillon-shell"><Sidebar activeView={activeView} onNavigate={onNavigate}/><Topbar/><main className="aiguillon-main"><div className="aiguillon-content">{children}</div></main></div>;
 }
 
-const navItems = [[Home, 'Vue d’ensemble'], [Map, 'Carte'], [BarChart3, 'Métriques'], [Settings, 'Paramètres']] as const;
+const navItems = [[Home, 'Vue d’ensemble', 'overview'], [BarChart3, 'Métriques', 'metrics'], [Settings, 'Paramètres', 'settings']] as const;
 
-export function Sidebar() {
-  return <aside className="aiguillon-sidebar" aria-label="Navigation principale"><Brand/><nav className="aiguillon-nav">{navItems.map(([Icon,label], index)=><button key={label} className="aiguillon-nav__item" aria-current={index===0?'page':undefined}><Icon/>{label}</button>)}</nav><div className="aiguillon-user"><span>CM</span><div><b>Camille Martin</b><small>Agent de terrain</small></div></div></aside>;
+export function Sidebar({activeView='overview',onNavigate}:{activeView?:string;onNavigate?:(view:'overview'|'metrics')=>void}) {
+  return <aside className="aiguillon-sidebar" aria-label="Navigation principale"><Brand/><nav className="aiguillon-nav">{navItems.map(([Icon,label,view])=><button key={label} className="aiguillon-nav__item" aria-current={activeView===view?'page':undefined} onClick={()=>view!=='settings'&&onNavigate?.(view)}><Icon/>{label}</button>)}</nav><div className="aiguillon-user"><span>CM</span><div><b>Camille Martin</b><small>Agent de terrain</small></div></div></aside>;
 }
 
 export function Topbar() {
