@@ -1,10 +1,5 @@
-import { config } from '../config'; import { initialChecks, residences } from '../data/mockData'; import type { Check, Residence } from '../types'; import { authService } from './authService';
-const wait=()=>new Promise(r=>setTimeout(r,180)); const memory=[...initialChecks];
-async function request<T>(path:string, options?:RequestInit):Promise<T>{const token=await authService.getAccessToken();const response=await fetch(`${config.apiBaseUrl}${path}`,{...options,headers:{'Content-Type':'application/json',...(token?{Authorization:`Bearer ${token}`}:{}) ,...options?.headers}});if(!response.ok)throw new Error(`API ${response.status}`);return response.json();}
-type CollectionResponse<T>={value:T[]};
-async function collection<T>(path:string):Promise<T[]>{return (await request<CollectionResponse<T>>(path)).value;}
-export const checkRepository={
-  async list():Promise<Check[]>{if(config.useMockData){await wait();return [...memory];}return collection('/checks');},
-  async residences():Promise<Residence[]>{if(config.useMockData)return residences;return collection('/residences');},
-  async update(id:string, patch:Partial<Check>):Promise<Check>{if(config.useMockData){await wait();const index=memory.findIndex(x=>x.id===id);memory[index]={...memory[index],...patch};return memory[index];}return request(`/checks/${id}`,{method:'PATCH',body:JSON.stringify(patch)});}
-};
+import {config} from '../config';import {mockData} from '../data/mockData';import type {AppData,Finding} from '../types';import {authService} from './authService';
+const memory:AppData=structuredClone(mockData);const wait=()=>new Promise(r=>setTimeout(r,80));
+async function request<T>(path:string,options?:RequestInit):Promise<T>{const token=await authService.getAccessToken();const response=await fetch(`${config.apiBaseUrl}${path}`,{...options,headers:{'Content-Type':'application/json',...(token?{Authorization:`Bearer ${token}`}:{})}});if(!response.ok)throw new Error(`API ${response.status}`);return response.json()}
+export interface FindingRepository{load():Promise<AppData>;saveFinding(finding:Finding):Promise<Finding>;deleteDraft(id:string):Promise<void>}
+export const checkRepository:FindingRepository={async load(){if(config.useMockData){await wait();return structuredClone(memory)}return request<AppData>('/bucket')},async saveFinding(finding){if(config.useMockData){const index=memory.findings.findIndex(f=>f.id===finding.id);if(index>=0)memory.findings[index]=structuredClone(finding);else memory.findings.unshift(structuredClone(finding));return structuredClone(finding)}return request<Finding>(`/findings/${finding.id}`,{method:'PUT',body:JSON.stringify(finding)})},async deleteDraft(id){if(config.useMockData){memory.findings.splice(0,memory.findings.length,...memory.findings.filter(f=>f.id!==id));return}await request(`/findings/${id}`,{method:'DELETE'})}};

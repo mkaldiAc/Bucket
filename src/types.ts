@@ -1,5 +1,20 @@
-export type Urgency = 'Critique' | 'Haute' | 'Normale' | 'Faible';
-export type Status = 'À faire' | 'Terminée';
-export interface Residence { id:string; name:string; address:string; city:string; latitude:number; longitude:number; }
-export interface Check { id:string; title:string; description:string; residenceId:string; urgency:Urgency; status:Status; dueDate:string; category:string; comment?:string; result?:'ok'|'not-ok'; photoName?:string; }
-export interface Filters { residenceId:string; maxDistance:string; urgency:string; status:string; }
+export type Role='AGENCY_FIELD_AGENT'|'TENANT_RELATIONS_SPECIALIST'|'TRANSVERSE_MANAGER'|'INTERNAL_EMPLOYEE';
+export type FamilyCode='GREEN'|'CLEANLINESS'|'DISPLAY'|'ELECTION';
+export type FormType='MOWING'|'CLEANLINESS_RATING'|'DOCUMENT_DISPLAY'|'ELECTION_DISPLAY';
+export type AnswerValue=string|number|boolean|null;
+export interface Agency{id:string;name:string}
+export interface Residence{id:string;name:string;address:string;city:string;agencyId:string;latitude:number;longitude:number}
+export interface AssetRef{level:'residence'|'building'|'stairwell'|'zone'|'lot';id:string;label:string;residenceId:string;buildingId?:string;stairwellId?:string;zoneId?:string;lotId?:string;address:string;latitude:number;longitude:number}
+export interface CampaignAudience{mode:'ALL_INTERNAL'|'SELECTED_ROLES';roleIds:Role[];profileIds?:string[]}
+export interface Campaign{id:string;name:string;description:string;familyIds:string[];startDate:string;endDate:string;agencyIds:string[];status:'ACTIVE'|'COMPLETED'|'UPCOMING';audience:CampaignAudience;allowAdHocFindings:boolean;requirementIds:string[]}
+export interface FindingQuestion{id:string;label:string;valueType:'BOOLEAN'|'CHOICE'|'RATING'|'DATETIME';required:boolean;options?:string[];allowNotApplicable?:boolean;conditionalOn?:{questionId:string;equals:AnswerValue}}
+export interface FindingFamily{id:string;code:FamilyCode;name:string;description:string;formType:FormType;allowedRoles:Role[];photoRequirement:'OPTIONAL'|'REQUIRED';questions:FindingQuestion[];configuration:{simpleForAllInternal?:boolean}}
+export interface FindingRequirement{id:string;title:string;campaignId:string;familyId:string;findingTypeId?:string;assetRef:AssetRef;agencyId:string;periodStart:string;periodEnd:string;dueDate:string;requiredCount:number;instructions:string;linkedFindingIds:string[]}
+export interface FindingAnswer{questionId:string;value:AnswerValue;notApplicable:boolean;comment?:string}
+export interface PhotoMetadata{id:string;name:string;capturedAt:string;previewUrl?:string}
+export type Serializable=string|number|boolean|null|Serializable[]|{[key:string]:Serializable};
+export interface ChangeHistoryEntry{id:string;date:string;userId:string;userName:string;action:'CREATED'|'DRAFT_SAVED'|'COMPLETED'|'CORRECTED'|'PHOTO_CHANGED'|'COMMENT_CHANGED';changedFields:string[];previousValues?:Record<string,Serializable>;newValues?:Record<string,Serializable>}
+export interface Finding{id:string;title:string;description:string;instructions:string;campaignId:string;requirementId?:string;familyId:string;findingTypeId?:string;origin:'PLANNED'|'AD_HOC';recordStatus:'DRAFT'|'COMPLETED';agencyId:string;residenceId:string;assetRef:AssetRef;observedAt:string;answers:FindingAnswer[];result:string;comment:string;photos:PhotoMetadata[];createdBy:string;createdAt:string;completedBy?:string;completedAt?:string;updatedBy:string;updatedAt:string;changeHistory:ChangeHistoryEntry[]}
+export interface UserProfile{id:string;displayName:string;role:Role;defaultAgencyId?:string;territoryIds:string[];scope:'AGENCY'|'REGION'|'ALL';permissions:string[]}
+export type RequirementState='UPCOMING'|'OPEN'|'DUE_SOON'|'OVERDUE'|'SATISFIED';
+export type AppData={agencies:Agency[];residences:Residence[];campaigns:Campaign[];families:FindingFamily[];requirements:FindingRequirement[];findings:Finding[];profiles:UserProfile[]};
