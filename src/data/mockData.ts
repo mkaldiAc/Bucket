@@ -17,10 +17,10 @@ export const families:FindingFamily[]=[
  {id:'election',code:'ELECTION',name:'Élections des locataires',description:'Affichage de l’étape électorale attendue.',formType:'ELECTION_DISPLAY',allowedRoles:['TENANT_RELATIONS_SPECIALIST','TRANSVERSE_MANAGER'],photoRequirement:'REQUIRED',configuration:{},questions:[{id:'display_done',label:'Affichage réalisé',valueType:'BOOLEAN',required:true},{id:'displayed_at',label:'Date et heure de réalisation',valueType:'DATETIME',required:true,conditionalOn:{questionId:'display_done',equals:true}}]}
 ];
 export const profiles:UserProfile[]=[
- {id:'camille',displayName:'Camille Martin',role:'AGENCY_FIELD_AGENT',defaultAgencyId:'rennes',territoryIds:['rennes'],scope:'AGENCY',permissions:['VIEW','CONTRIBUTE']},
- {id:'sophie',displayName:'Sophie Bernard',role:'TENANT_RELATIONS_SPECIALIST',territoryIds:['rennes','brest','morbihan'],scope:'REGION',permissions:['VIEW','CONTRIBUTE']},
- {id:'delphine',displayName:'Delphine Leroy',role:'TRANSVERSE_MANAGER',territoryIds:['rennes','brest','morbihan'],scope:'ALL',permissions:['VIEW','CONTRIBUTE','EDIT_ALL_DRAFTS']},
- {id:'elodie',displayName:'Élodie Robert',role:'INTERNAL_EMPLOYEE',territoryIds:['rennes','brest','morbihan'],scope:'ALL',permissions:['VIEW','CONTRIBUTE']}
+ {id:'camille',displayName:'Camille Martin',role:'AGENCY_FIELD_AGENT',functionLabel:'GI',defaultAgencyId:'rennes',territoryIds:['rennes'],scope:'AGENCY',permissions:['VIEW','CONTRIBUTE']},
+ {id:'sophie',displayName:'Sophie Bernard',role:'TENANT_RELATIONS_SPECIALIST',functionLabel:'Régie',territoryIds:['rennes','brest','morbihan'],scope:'REGION',permissions:['VIEW','CONTRIBUTE']},
+ {id:'delphine',displayName:'Delphine Lerou',role:'TRANSVERSE_MANAGER',functionLabel:'RAG',territoryIds:['rennes','brest','morbihan'],scope:'ALL',permissions:['VIEW','CONTRIBUTE','EDIT_ALL_DRAFTS']},
+ {id:'elodie',displayName:'Elodie Robert',role:'INTERNAL_EMPLOYEE',functionLabel:'Siège',territoryIds:['rennes','brest','morbihan'],scope:'ALL',permissions:['VIEW','CONTRIBUTE']}
 ];
 const campaignDefs=[
  ['green-camp','Tonte des espaces verts','Objectiver la réalisation visible de la tonte.','green',8,'ACTIVE',true,'SELECTED_ROLES',fieldRoles],
